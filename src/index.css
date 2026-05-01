@@ -1,0 +1,95 @@
+#progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--progress-z-index, 999999999);
+  pointer-events: none;
+}
+
+#progress .bar {
+  background: var(--progress-color, #3c6df0);
+
+  position: fixed;
+  z-index: var(--progress-z-index, 999999999);
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: var(--progress-height, 3px);
+}
+
+#progress .peg {
+  display: block;
+  position: absolute;
+  right: 0px;
+  width: 100px;
+  height: 100%;
+  box-shadow: var(
+    --progress-box-shadow,
+    0 0 10px var(--progress-color, #3c6df0),
+    0 0 5px var(--progress-color, #3c6df0)
+  );
+  opacity: 1;
+
+  -webkit-transform: rotate(3deg) translate(0px, -4px);
+  -ms-transform: rotate(3deg) translate(0px, -4px);
+  transform: rotate(3deg) translate(0px, -4px);
+}
+
+#progress .spinner {
+  display: block;
+  position: fixed;
+  z-index: var(--progress-z-index, 999999999);
+  top: var(--progress-spinner-top, 15px);
+  right: var(--progress-spinner-right, 15px);
+  bottom: var(--progress-spinner-bottom, unset);
+  left: var(--progress-spinner-left, unset);
+}
+
+#progress[dir='rtl'] .spinner {
+  display: block;
+  position: fixed;
+  z-index: var(--progress-z-index, 999999999);
+  top: var(--progress-spinner-top, 15px);
+  right: var(--progress-spinner-right, unset);
+  bottom: var(--progress-spinner-bottom, unset);
+  left: var(--progress-spinner-left, 15px);
+}
+
+#progress .spinner-icon {
+  width: var(--progress-spinner-size, 18px);
+  height: var(--progress-spinner-size, 18px);
+  box-sizing: border-box;
+
+  border: solid var(--progress-spinner-border-width, 3px) transparent;
+  border-top-color: var(--progress-color, #3c6df0);
+  border-left-color: var(--progress-color, #3c6df0);
+  border-radius: 50%;
+
+  -webkit-animation: var(
+    --progress-spinner-animation,
+    progress-spinner var(--progress-spinner-animation-duration, 0.4s) linear infinite
+  );
+  animation: var(
+    --progress-spinner-animation,
+    progress-spinner var(--progress-spinner-animation-duration, 0.4s) linear infinite
+  );
+}
+
+@-webkit-keyframes progress-spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes progress-spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

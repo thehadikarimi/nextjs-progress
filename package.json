@@ -1,0 +1,83 @@
+{
+  "name": "nextjs-progress",
+  "version": "1.0.0",
+  "description": "A lightweight and customizable progress for Next.js applications that works with both App Router and Pages Router directory.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thehadikarimi/nextjs-progress"
+  },
+  "bugs": {
+    "url": "https://github.com/thehadikarimi/nextjs-progress/issues"
+  },
+  "homepage": "https://github.com/thehadikarimi/nextjs-progress#readme",
+  "keywords": [
+    "next",
+    "next.js",
+    "next progress",
+    "next nprogress",
+    "next progress bar",
+    "next.js progress",
+    "next.js nprogress",
+    "next.js progress bar",
+    "nprogress",
+    "progress bar app directory",
+    "progress bar pages directory",
+    "app directory",
+    "pages directory",
+    "progress app directory",
+    "progress pages directory"
+  ],
+  "author": "Hadi Karimi",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "format": "prettier --write ."
+  },
+  "peerDependencies": {
+    "next": ">=13.0.0",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "prettier": "^3.8.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./app": {
+      "types": "./dist/app.d.ts",
+      "import": "./dist/app.js",
+      "require": "./dist/app.cjs"
+    },
+    "./pages": {
+      "types": "./dist/pages.d.ts",
+      "import": "./dist/pages.js",
+      "require": "./dist/pages.cjs"
+    },
+    "./link": {
+      "types": "./dist/link.d.ts",
+      "import": "./dist/link.js",
+      "require": "./dist/link.cjs"
+    },
+    "./css": "./dist/index.css"
+  },
+  "sideEffects": [
+    "./dist/index.css"
+  ]
+}
