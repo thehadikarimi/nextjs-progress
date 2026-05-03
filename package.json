@@ -1,6 +1,6 @@
 {
   "name": "nextjs-progress",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A lightweight and customizable progress for Next.js applications that works with both App Router and Pages Router directory.",
   "type": "module",
   "repository": {

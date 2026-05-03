@@ -4,6 +4,7 @@ import { useRouter as useNextRouter } from 'next/router';
 import Progress from './progress';
 
 import { useProgress } from '../hooks/use-progress';
+import { shouldSkipProgress } from '../utils/progress.util';
 import { getCurUrl, isSameUrl, normalizeUrl } from '../utils/router.util';
 
 import type { ProgressProps } from '../types/progress.type';
@@ -39,6 +40,9 @@ export function PagesProgress<T extends React.ElementType = 'div'>(props: Progre
   React.useEffect(() => {
     const handleStart = (url: string, { shallow }: { shallow: boolean }) => {
       if (shallow) return;
+
+      // Skip starting progress if <Link disableProgress /> triggered the navigation.
+      if (shouldSkipProgress()) return;
 
       // Next.js Pages Router does not update the `url` argument on browser
       // back/forward, so we detect popstate by checking the current URL.

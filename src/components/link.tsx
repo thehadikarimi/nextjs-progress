@@ -2,6 +2,7 @@ import React from 'react';
 import NextLink from 'next/link';
 
 import { useProgress } from '../hooks/use-progress';
+import { setSkipProgress } from '../utils/progress.util';
 import { getCurUrl, isExternalUrl, isSameUrl, normalizeUrl } from '../utils/router.util';
 
 import { TIMEOUT_DELAY } from '../constants';
@@ -39,7 +40,8 @@ export const Link = React.forwardRef<HTMLAnchorElement, Props>((props, ref) => {
 
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
-    if (disableProgress) return;
+    // Tell PagesProgress not to start progress for this navigation.
+    if (disableProgress) return setSkipProgress();
 
     const href = e.currentTarget.href;
 

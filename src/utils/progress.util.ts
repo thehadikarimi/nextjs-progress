@@ -8,3 +8,17 @@ export function toBarPerc(n: number, direction: ProgressDirection) {
 export function clamp(n: number, min: number, max: number): number {
   return Math.max(min, Math.min(n, max));
 }
+
+// Used to prevent starting progress in the Pages Router directory when navigation was triggered
+// by <Link disableProgress />. This flag resets automatically after being read.
+let skipProgress: boolean = false;
+
+export function setSkipProgress(): void {
+  skipProgress = true;
+}
+
+export function shouldSkipProgress(): boolean {
+  const prevSkipProgress = skipProgress;
+  skipProgress = false;
+  return prevSkipProgress;
+}
