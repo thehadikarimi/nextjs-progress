@@ -40,12 +40,14 @@ export const Link = React.forwardRef<HTMLAnchorElement, Props>((props, ref) => {
 
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
-    // Tell PagesProgress not to start progress for this navigation.
-    if (disableProgress) return setSkipProgress();
-
     const href = e.currentTarget.href;
 
     if (isExternalUrl(href)) return;
+
+    // Tell PagesProgress not to start progress for <Link />.
+    setSkipProgress();
+
+    if (disableProgress) return;
 
     if (isSameUrl(href)) {
       if (progress.settings.disableSameUrl) {

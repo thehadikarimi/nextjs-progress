@@ -41,7 +41,7 @@ export function PagesProgress<T extends React.ElementType = 'div'>(props: Progre
     const handleStart = (url: string, { shallow }: { shallow: boolean }) => {
       if (shallow) return;
 
-      // Skip starting progress if <Link disableProgress /> triggered the navigation.
+      // Skip starting progress if <Link /> triggered the navigation.
       if (shouldSkipProgress()) return;
 
       // Next.js Pages Router does not update the `url` argument on browser

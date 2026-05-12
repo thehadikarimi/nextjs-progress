@@ -10,7 +10,7 @@ export function clamp(n: number, min: number, max: number): number {
 }
 
 // Used to prevent starting progress in the Pages Router directory when navigation was triggered
-// by <Link disableProgress />. This flag resets automatically after being read.
+// by <Link />. This flag resets automatically after being read.
 let skipProgress: boolean = false;
 
 export function setSkipProgress(): void {
