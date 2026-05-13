@@ -1,12 +1,10 @@
 import { clamp } from '../utils/progress.util';
 
-import { TIMEOUT_DELAY } from '../constants';
+import { PROGRESS_MAX, PROGRESS_MIN, TIMEOUT_DELAY } from '../constants';
 
 import type { ProgressOptions } from '../types/progress.type';
 
 const defaultSettings: Required<ProgressOptions> = {
-  minimum: 0.08,
-  maximum: 1,
   easing: 'linear',
   speed: 200,
   trickle: true,
@@ -44,10 +42,10 @@ export class Progress {
   static set(n: number) {
     if (this.status === null) return;
 
-    n = clamp(n, this.settings.minimum, this.settings.maximum);
+    n = clamp(n, PROGRESS_MIN, PROGRESS_MAX);
 
-    if (n === this.settings.maximum) {
-      this.status = this.settings.maximum;
+    if (n === PROGRESS_MAX) {
+      this.status = PROGRESS_MAX;
 
       setTimeout(() => {
         this.status = null;
@@ -80,7 +78,7 @@ export class Progress {
       this.trickleInterval = null;
     }
 
-    this.status = this.settings.maximum;
+    this.status = PROGRESS_MAX;
     this.notify();
 
     setTimeout(() => {
@@ -122,7 +120,7 @@ export class Progress {
     this.trickleInterval = setTimeout(() => {
       if (this.status === null) return;
 
-      if (this.status < this.settings.maximum) {
+      if (this.status < PROGRESS_MAX) {
         this.inc();
         this.trickleLoop();
       }

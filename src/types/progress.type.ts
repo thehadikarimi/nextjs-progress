@@ -3,8 +3,6 @@ import type { ComponentPropsWithoutRef, ElementType } from 'react';
 export type ProgressDirection = 'ltr' | 'rtl';
 
 export type ProgressOptions = {
-  minimum?: number;
-  maximum?: number;
   easing?: string;
   speed?: number;
   trickle?: boolean;
@@ -32,11 +30,11 @@ export type UseProgressReturn = {
    */
   done: (force?: boolean) => void;
   /**
-   * Set the progress to a specific value (0–maximum as defined in settings).
+   * Set the progress to a specific value (0–1).
    */
   set: (n: number) => void;
   /**
-   * Increment the progress value (0–maximum as defined in settings).
+   * Increment the progress value (0–1).
    */
   inc: (amount?: number) => void;
   /**

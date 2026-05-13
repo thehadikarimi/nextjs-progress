@@ -190,8 +190,6 @@ export default function Page() {
 
 | options        | Type      | Default  | Description                                                                                                   |
 | -------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------- |
-| `minimum`      | `number`  | `0.08`   | The minimum progress bar value.                                                                               |
-| `maximum`      | `number`  | `1`      | The maximum progress bar value.                                                                               |
 | `easing`       | `string`  | `linear` | The CSS `transition-timing-function` for progress bar animations.                                             |
 | `speed`        | `number`  | `200`    | The speed of the progress animation in milliseconds.                                                          |
 | `trickle`      | `number`  | `true`   | Whether to enable the “trickle” effect (gradual progress bar increase).                                       |
