@@ -188,14 +188,15 @@ export default function Page() {
 
 ### ProgressOptions
 
-| options        | Type      | Default  | Description                                                                                                   |
-| -------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------- |
-| `easing`       | `string`  | `linear` | The CSS `transition-timing-function` for progress bar animations.                                             |
-| `speed`        | `number`  | `200`    | The speed of the progress animation in milliseconds.                                                          |
-| `trickle`      | `number`  | `true`   | Whether to enable the “trickle” effect (gradual progress bar increase).                                       |
-| `trickleSpeed` | `number`  | `200`    | The speed of the trickle effect in milliseconds.                                                              |
-| `showSpinner`  | `boolean` | `false`  | Whether to show a loading spinner with progress bar.                                                          |
-| `direction`    | `ltr│rtl` | `ltr`    | Direction of the progress bar. If not provided, it automatically falls back to `document.dir` (if available). |
+| options        | Type      | Default  | Description                                                                                                           |
+| -------------- | --------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| `easing`       | `string`  | `linear` | The CSS `transition-timing-function` for progress bar animations.                                                     |
+| `speed`        | `number`  | `200`    | The speed of the progress bar animation (ms).                                                                         |
+| `trickle`      | `number`  | `true`   | Whether to enable the “trickle” effect (gradual progress bar increase).                                               |
+| `trickleSpeed` | `number`  | `200`    | The speed of the trickle effect (ms).                                                                                 |
+| `showSpinner`  | `boolean` | `false`  | Whether to show a loading spinner with progress bar.                                                                  |
+| `direction`    | `ltr│rtl` | `ltr`    | Direction of the progress bar. If not provided, it automatically falls back to `document.dir` (if available).         |
+| `exitDuration` | `number`  | `200`    | Time (ms) to keep the custom progress mounted after completion. Should match your exit transition/animation duration. |
 
 ## Configuration
 

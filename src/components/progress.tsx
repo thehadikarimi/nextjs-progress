@@ -4,8 +4,6 @@ import { createPortal } from 'react-dom';
 import { useProgress } from '../hooks/use-progress';
 import { toBarPerc } from '../utils/progress.util';
 
-import { TIMEOUT_DELAY } from '../constants';
-
 import type { ProgressDirection, ProgressProps } from '../types/progress.type';
 
 function Progress<T extends React.ElementType = 'div'>(
@@ -13,13 +11,15 @@ function Progress<T extends React.ElementType = 'div'>(
 ): React.ReactElement | null {
   const { as, asChild, children, disableSameUrl = true, options, ...rest } = props;
   const Comp = as || 'div';
+  const isCustomProgress = children || as;
 
   const [mounted, setMounted] = React.useState(false);
 
   const progress = useProgress();
   const isActive = progress.status !== null;
   const dataState = isActive ? 'active' : 'done';
-  const perc = toBarPerc(progress.status ?? 0, progress.settings.direction!);
+  const dataProgress = progress.status === null ? 100 : Math.round(progress.status * 100);
+  const perc = toBarPerc(progress.status ?? 0, progress.settings.direction as ProgressDirection);
 
   React.useEffect(() => {
     let dir = progress.settings.direction;
@@ -36,17 +36,16 @@ function Progress<T extends React.ElementType = 'div'>(
   React.useEffect(() => {
     if (isActive) {
       setMounted(true);
-    } else {
-      const stateTimeout = setTimeout(
-        () => {
-          setMounted(false);
-        },
-        (progress.settings.speed || 0) + TIMEOUT_DELAY,
-      );
-
-      return () => clearTimeout(stateTimeout);
+      return;
     }
-  }, [isActive, progress.settings.speed]);
+
+    const delay = isCustomProgress ? progress.settings.exitDuration : progress.settings.speed;
+    const stateTimeout = setTimeout(() => {
+      setMounted(false);
+    }, delay);
+
+    return () => clearTimeout(stateTimeout);
+  }, [isActive]);
 
   React.useEffect(() => {
     if (dataState === 'active') {
@@ -64,21 +63,17 @@ function Progress<T extends React.ElementType = 'div'>(
 
   if (!mounted) return null;
 
-  if (children || as) {
+  if (isCustomProgress) {
     return createPortal(
       <>
         {asChild ? (
           React.cloneElement(children as React.ReactElement, {
             ...rest,
             'data-state': dataState,
-            'data-progress': Math.round((progress.status ?? 0) * 100),
+            'data-progress': dataProgress,
           })
         ) : (
-          <Comp
-            {...rest}
-            data-state={dataState}
-            data-progress={Math.round((progress.status ?? 0) * 100)}
-          >
+          <Comp {...rest} data-state={dataState} data-progress={dataProgress}>
             {children}
           </Comp>
         )}

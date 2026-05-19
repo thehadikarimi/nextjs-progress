@@ -10,6 +10,7 @@ export type ProgressOptions = {
   showSpinner?: boolean;
   disableSameUrl?: boolean;
   direction?: ProgressDirection;
+  exitDuration?: number;
 };
 
 export type UseProgressReturn = {

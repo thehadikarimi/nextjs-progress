@@ -12,6 +12,7 @@ const defaultSettings: Required<ProgressOptions> = {
   showSpinner: false,
   disableSameUrl: true,
   direction: 'ltr',
+  exitDuration: 200,
 };
 
 export class Progress {
