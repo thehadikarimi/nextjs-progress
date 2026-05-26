@@ -19,39 +19,76 @@ export class Progress {
   static settings: Required<ProgressOptions> = defaultSettings;
   static status: number | null = null;
 
-  // Store the last settings to prevent redundant configurations
-  private static lastSettings: Partial<ProgressOptions> | null = null;
-
   // Timer for the automatic trickle increment effect
-  private static trickleInterval: ReturnType<typeof setTimeout> | null = null;
+  private static trickleTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // Track pending initialization and exit timers
+  private static initTimer: ReturnType<typeof setTimeout> | null = null;
+  private static exitTimer: ReturnType<typeof setTimeout> | null = null;
 
   // List of components/hooks that want to be notified on every status change
-  private static listeners: (() => void)[] = [];
+  private static listeners: Set<() => void> = new Set();
 
   // Configure Progress with new options
   static configure(options: Partial<ProgressOptions>) {
-    const newSettings = { ...this.settings, ...options };
+    const changed = (Object.keys(options) as (keyof ProgressOptions)[]).some(
+      (key) => this.settings[key] !== options[key],
+    );
 
-    if (JSON.stringify(newSettings) !== JSON.stringify(this.lastSettings)) {
-      this.settings = newSettings;
-      this.lastSettings = newSettings;
-      this.notify();
-    }
+    if (!changed) return;
+
+    this.settings = { ...this.settings, ...options };
+    this.notify();
   }
 
   // Set the Progress status
   static set(n: number) {
-    if (this.status === null) return;
-
     n = clamp(n, PROGRESS_MIN, PROGRESS_MAX);
 
-    if (n === PROGRESS_MAX) {
-      this.status = PROGRESS_MAX;
+    if (this.status === n) return;
 
-      setTimeout(() => {
+    // Clear any pending exit timer - new progress cycle is starting
+    if (this.exitTimer) {
+      clearTimeout(this.exitTimer);
+      this.exitTimer = null;
+    }
+
+    // Initial render: set to 0 immediately, then animate to target
+    if (this.status === null) {
+      this.status = 0;
+      this.notify();
+
+      this.initTimer = setTimeout(() => {
+        this.initTimer = null;
+        this.set(n);
+      }, TIMEOUT_DELAY);
+
+      return;
+    }
+
+    // If we're still in init phase and done() is called, skip to completion
+    if (this.initTimer && n === PROGRESS_MAX) {
+      clearTimeout(this.initTimer);
+      this.initTimer = null;
+    }
+
+    // Completion: stop trickle, set to 100%, then hide after exit duration
+    if (n === PROGRESS_MAX) {
+      if (this.trickleTimer) {
+        clearTimeout(this.trickleTimer);
+        this.trickleTimer = null;
+      }
+
+      this.status = PROGRESS_MAX;
+      this.notify();
+
+      this.exitTimer = setTimeout(() => {
+        this.exitTimer = null;
         this.status = null;
         this.notify();
-      }, this.settings.speed + TIMEOUT_DELAY);
+      }, this.settings.exitDuration + TIMEOUT_DELAY);
+
+      return;
     }
 
     this.status = n;
@@ -62,8 +99,7 @@ export class Progress {
   static start() {
     if (this.status !== null) return;
 
-    this.status = 0;
-    this.notify();
+    this.set(0);
 
     if (this.settings.trickle) {
       this.trickleLoop();
@@ -73,19 +109,7 @@ export class Progress {
   // Complete the Progress
   static done(force: boolean = false) {
     if (!force && this.status === null) return;
-
-    if (this.trickleInterval) {
-      clearTimeout(this.trickleInterval);
-      this.trickleInterval = null;
-    }
-
-    this.status = PROGRESS_MAX;
-    this.notify();
-
-    setTimeout(() => {
-      this.status = null;
-      this.notify();
-    }, this.settings.speed + TIMEOUT_DELAY);
+    this.set(PROGRESS_MAX);
   }
 
   // Increment the Progress
@@ -112,13 +136,12 @@ export class Progress {
 
     n = clamp(n + amount, 0, 0.994);
 
-    this.status = n;
-    this.notify();
+    this.set(n);
   }
 
   // Runs the trickle increment loop while Progress is active
   private static trickleLoop() {
-    this.trickleInterval = setTimeout(() => {
+    this.trickleTimer = setTimeout(() => {
       if (this.status === null) return;
 
       if (this.status < PROGRESS_MAX) {
@@ -130,14 +153,12 @@ export class Progress {
 
   // Notify all subscribed components/hooks that status changed
   private static notify() {
-    this.listeners.forEach((cb) => cb());
+    [...this.listeners].forEach((cb) => cb());
   }
 
   // Allow React components to subscribe to status changes. Returns unsubscribe function
   static subscribe(listener: () => void) {
-    this.listeners.push(listener);
-    return () => {
-      this.listeners = this.listeners.filter((l) => l !== listener);
-    };
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
   }
 }

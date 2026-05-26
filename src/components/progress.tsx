@@ -4,6 +4,8 @@ import { createPortal } from 'react-dom';
 import { useProgress } from '../hooks/use-progress';
 import { toBarPerc } from '../utils/progress.util';
 
+import { PROGRESS_MAX } from '../constants';
+
 import type { ProgressDirection, ProgressProps } from '../types/progress.type';
 
 function Progress<T extends React.ElementType = 'div'>(
@@ -19,19 +21,20 @@ function Progress<T extends React.ElementType = 'div'>(
   const isActive = progress.status !== null;
   const dataState = isActive ? 'active' : 'done';
   const dataProgress = progress.status === null ? 100 : Math.round(progress.status * 100);
-  const perc = toBarPerc(progress.status ?? 0, progress.settings.direction as ProgressDirection);
+  const perc = toBarPerc(
+    progress.status ?? PROGRESS_MAX,
+    progress.settings.direction as ProgressDirection,
+  );
 
   React.useEffect(() => {
-    let dir = progress.settings.direction;
+    const direction =
+      options?.direction || (document.dir as ProgressDirection) || progress.settings.direction;
+    const exitDuration = isCustomProgress
+      ? (options?.exitDuration ?? progress.settings.exitDuration)
+      : (options?.speed ?? progress.settings.speed);
 
-    if (options?.direction) {
-      dir = options.direction;
-    } else if (document.dir) {
-      dir = document.dir as ProgressDirection;
-    }
-
-    progress.configure({ ...options, disableSameUrl, direction: dir });
-  }, [options, disableSameUrl]);
+    progress.configure({ ...options, disableSameUrl, direction, exitDuration });
+  }, [options, disableSameUrl, isCustomProgress, progress]);
 
   React.useEffect(() => {
     if (isActive) {
@@ -39,10 +42,9 @@ function Progress<T extends React.ElementType = 'div'>(
       return;
     }
 
-    const delay = isCustomProgress ? progress.settings.exitDuration : progress.settings.speed;
     const stateTimeout = setTimeout(() => {
       setMounted(false);
-    }, delay);
+    }, progress.settings.exitDuration);
 
     return () => clearTimeout(stateTimeout);
   }, [isActive]);
@@ -85,17 +87,19 @@ function Progress<T extends React.ElementType = 'div'>(
   return createPortal(
     <div
       id="progress"
-      style={{
-        opacity: isActive ? '1' : '0',
-        transition: `opacity ${progress.settings.speed}ms ${progress.settings.easing}`,
-      }}
       dir={progress.settings.direction}
+      style={{
+        ...(!isActive && {
+          opacity: '0',
+          transition: `opacity ${progress.settings.speed}ms ${progress.settings.easing}`,
+        }),
+      }}
     >
       <div
         className="bar"
         style={{
+          transform: `translate3d(${perc}%, 0, 0)`,
           transition: `transform ${progress.settings.speed}ms ${progress.settings.easing}`,
-          transform: isActive ? `translate3d(${perc}%, 0, 0)` : 'none',
         }}
       >
         <div className="peg" />
