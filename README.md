@@ -1,3 +1,19 @@
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=be2d8a11-9712-4c1d-9963-580b2d4fb133" />
+
+<div align="center">
+  <img src="./media/header.png" alt="nextjs-progress" />
+</div>
+
+<br />
+
+<div align="center">
+  <a href="https://www.npmjs.com/package/nextjs-progress"><img src="https://img.shields.io/npm/v/nextjs-progress?color=3c6df0" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/nextjs-progress"><img src="https://img.shields.io/npm/dm/nextjs-progress?color=3c6df0" alt="npm downloads" /></a>
+  <a href="https://bundlejs.com/?q=nextjs-progress"><img src="https://img.shields.io/bundlejs/size/nextjs-progress?color=3c6df0&label=bundle%20size" alt="Bundle size" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/nextjs-progress?color=3c6df0" alt="License" /></a>
+  <a href="https://github.com/thehadikarimi/nextjs-progress/stargazers"><img src="https://img.shields.io/github/stars/thehadikarimi/nextjs-progress?style=social&label=Star" alt="GitHub stars" /></a>
+</div>
+
 # nextjs-progress
 
 A lightweight and customizable progress for **Next.js** applications that works with both **App Router** and **Pages Router** directory.
@@ -192,7 +208,7 @@ export default function Page() {
 | -------------- | --------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
 | `easing`       | `string`  | `linear` | The CSS `transition-timing-function` for progress bar animations.                                                     |
 | `speed`        | `number`  | `200`    | The speed of the progress bar animation (ms).                                                                         |
-| `trickle`      | `number`  | `true`   | Whether to enable the “trickle” effect (gradual progress bar increase).                                               |
+| `trickle`      | `number`  | `true`   | Whether to enable the “trickle” effect (gradual progress increase).                                                   |
 | `trickleSpeed` | `number`  | `200`    | The speed of the trickle effect (ms).                                                                                 |
 | `showSpinner`  | `boolean` | `false`  | Whether to show a loading spinner with progress bar.                                                                  |
 | `direction`    | `ltr│rtl` | `ltr`    | Direction of the progress bar. If not provided, it automatically falls back to `document.dir` (if available).         |
