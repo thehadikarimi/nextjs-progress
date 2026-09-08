@@ -7,12 +7,16 @@
 <br />
 
 <div align="center">
-  <a href="https://www.npmjs.com/package/nextjs-progress"><img src="https://img.shields.io/npm/v/nextjs-progress?color=3c6df0" alt="npm version" /></a>
-  <a href="https://www.npmjs.com/package/nextjs-progress"><img src="https://img.shields.io/npm/dm/nextjs-progress?color=3c6df0" alt="npm downloads" /></a>
-  <a href="https://bundlejs.com/?q=nextjs-progress"><img src="https://img.shields.io/bundlejs/size/nextjs-progress?color=3c6df0&label=bundle%20size" alt="Bundle size" /></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/nextjs-progress?color=3c6df0" alt="License" /></a>
-  <a href="https://github.com/thehadikarimi/nextjs-progress/stargazers"><img src="https://img.shields.io/github/stars/thehadikarimi/nextjs-progress?style=social&label=Star" alt="GitHub stars" /></a>
+  <a href="https://www.npmjs.com/package/nextjs-progress"><img src="https://img.shields.io/npm/v/nextjs-progress?color=055cf9" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/nextjs-progress"><img src="https://img.shields.io/npm/dm/nextjs-progress?color=cb3837" alt="npm downloads" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/nextjs-progress?color=2ea44f" alt="License" /></a>
+  <a href="https://github.com/thehadikarimi/nextjs-progress/stargazers"><img src="https://img.shields.io/github/stars/thehadikarimi/nextjs-progress?style=social" alt="GitHub stars" /></a>
 </div>
+
+<div align="center">
+  <a href="https://bundlejs.com/?q=nextjs-progress"><img src='https://deno.bundlejs.com/?q=nextjs-progress&config={"esbuild":{"external":["react","react-dom","next"]}}&badge=detailed' alt="Bundle size" /></a>
+</div>
+
 
 # nextjs-progress
 
