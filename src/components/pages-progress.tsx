@@ -7,6 +7,8 @@ import { useProgress } from '../hooks/use-progress';
 import { shouldSkipProgress } from '../utils/progress.util';
 import { getCurUrl, isSameUrl, normalizeUrl } from '../utils/router.util';
 
+import { Progress as ProgressCore } from '../core/progress';
+
 import type { ProgressProps } from '../types/progress.type';
 
 /**
@@ -36,8 +38,11 @@ export function PagesProgress<T extends React.ElementType = 'div'>(props: Progre
   const router = useNextRouter();
   const progress = useProgress();
   const prevUrlRef = React.useRef<string>('');
+  const { disableSameUrl, basePath, i18nPath } = ProgressCore.getRouting();
 
   React.useEffect(() => {
+    const routingOptions = { basePath, i18nPath };
+
     const handleStart = (url: string, { shallow }: { shallow: boolean }) => {
       if (shallow) return;
 
@@ -48,16 +53,17 @@ export function PagesProgress<T extends React.ElementType = 'div'>(props: Progre
       // back/forward, so we detect popstate by checking the current URL.
       // If it's unchanged, treat it as a backward/forward navigation and
       // use the previous URL instead, so progress can start correctly.
-      if (prevUrlRef.current && normalizeUrl(url) === getCurUrl()) url = prevUrlRef.current;
+      if (prevUrlRef.current && normalizeUrl(url, routingOptions) === getCurUrl(routingOptions))
+        url = prevUrlRef.current;
 
-      if (isSameUrl(url) && progress.settings.disableSameUrl) return;
+      if (isSameUrl(url, routingOptions) && disableSameUrl) return;
 
       progress.start();
     };
 
     const handleComplete = () => {
       progress.done();
-      prevUrlRef.current = getCurUrl();
+      prevUrlRef.current = getCurUrl(routingOptions);
     };
 
     router.events.on('routeChangeStart', handleStart);
@@ -69,7 +75,7 @@ export function PagesProgress<T extends React.ElementType = 'div'>(props: Progre
       router.events.off('routeChangeComplete', handleComplete);
       router.events.off('routeChangeError', handleComplete);
     };
-  }, [progress.settings.disableSameUrl]);
+  }, [disableSameUrl, basePath, i18nPath]);
 
   return <Progress {...props} />;
 }

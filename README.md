@@ -1,33 +1,40 @@
 <img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=be2d8a11-9712-4c1d-9963-580b2d4fb133" />
 
 <div align="center">
-  <img src="./media/header.png" alt="nextjs-progress" />
+  <img src="https://raw.githubusercontent.com/thehadikarimi/nextjs-progress/main/media/header.png" alt="nextjs-progress" />
 </div>
 
 <br />
 
 <div align="center">
-  <a href="https://www.npmjs.com/package/nextjs-progress"><img src="https://img.shields.io/npm/v/nextjs-progress?color=3c6df0" alt="npm version" /></a>
-  <a href="https://www.npmjs.com/package/nextjs-progress"><img src="https://img.shields.io/npm/dm/nextjs-progress?color=3c6df0" alt="npm downloads" /></a>
-  <a href="https://bundlejs.com/?q=nextjs-progress"><img src="https://img.shields.io/bundlejs/size/nextjs-progress?color=3c6df0&label=bundle%20size" alt="Bundle size" /></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/nextjs-progress?color=3c6df0" alt="License" /></a>
-  <a href="https://github.com/thehadikarimi/nextjs-progress/stargazers"><img src="https://img.shields.io/github/stars/thehadikarimi/nextjs-progress?style=social&label=Star" alt="GitHub stars" /></a>
+  <a href="https://www.npmjs.com/package/nextjs-progress"><img src="https://img.shields.io/npm/v/nextjs-progress?color=055cf9" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/nextjs-progress"><img src="https://img.shields.io/npm/dm/nextjs-progress?color=cb3837" alt="npm downloads" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/nextjs-progress?color=2ea44f" alt="License" /></a>
+  <a href="https://github.com/thehadikarimi/nextjs-progress/stargazers"><img src="https://img.shields.io/github/stars/thehadikarimi/nextjs-progress?style=social" alt="GitHub stars" /></a>
+</div>
+
+<div align="center">
+  <a href="https://bundlejs.com/?q=nextjs-progress"><img src='https://deno.bundlejs.com/?q=nextjs-progress&config={"esbuild":{"external":["react","react-dom","next"]}}&badge=detailed' alt="Bundle size" /></a>
 </div>
 
 # nextjs-progress
 
-A lightweight and customizable progress for **Next.js** applications that works with both **App Router** and **Pages Router** directory.
-It supports custom progress, browser back/forward detection and handles same-page navigations.
+A lightweight and customizable progress indicator for **Next.js** applications.
+
+Supports both the **App Router** and **Pages Router**.
 
 ## Features
 
-- Works in both **App Router** and **Pages Router** directory
-- Fully customizable
-- Custom progress support
-- Detects browser back/forward and same-page navigations
-- Works seamlessly with both JavaScript and TypeScript
-- Custom `useRouter` for App Router and `Link` that works with the progress
-- `useProgress` hook for manual control (e.g., during data fetching)
+- App Router and Pages Router support
+- Customizable progress indicator
+- Browser back/forward navigation
+- Same-URL navigation
+- `basePath` support
+- Locale-prefixed routes (`i18nPath`)
+- Progress-aware `Link`
+- Custom `createRouter()` and `createLink()` APIs
+- Manual progress control with `useProgress`
+- TypeScript support
 
 ## Installation
 
@@ -35,11 +42,9 @@ It supports custom progress, browser back/forward detection and handles same-pag
 npm install nextjs-progress
 ```
 
-## Usage
+## App Router
 
-### App Router
-
-#### Default Progress Bar
+### Progress
 
 ```tsx
 'use client';
@@ -47,94 +52,89 @@ npm install nextjs-progress
 import { Progress } from 'nextjs-progress/app';
 import 'nextjs-progress/css';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <body>
-        {children}
-        <Progress options={{ showSpinner: true }} />
-      </body>
-    </html>
-  );
+export default function ProgressProvider() {
+  return <Progress />;
 }
 ```
 
----
+You can pass progress options:
 
-#### Custom Progress
+```tsx
+<Progress
+  options={{
+    showSpinner: true,
+    trickle: true,
+  }}
+/>
+```
+
+### Custom Progress
+
+Use `children`, `as`, or `asChild` to customize the progress component.
 
 ```tsx
 'use client';
 
 import { Progress } from 'nextjs-progress/app';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function ProgressProvider() {
   return (
-    <html lang="en">
-      <body>
-        {children}
-        <Progress className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          Loading...
-        </Progress>
-      </body>
-    </html>
+    <Progress className="fixed inset-0 z-50 flex items-center justify-center">Loading...</Progress>
   );
 }
 ```
 
-When working with the **App Router** directory, you can use the progress in two different ways:
+### `useRouter`
 
-1. Make your RootLayout a client component and render the progress directly inside it.
-2. Wrap progress in a client component and use it inside your server Layout (Recommended).
+The package provides a progress-aware App Router `useRouter`.
 
-### Pages Router
+```tsx
+'use client';
 
-#### Default Progress Bar
+import { useRouter } from 'nextjs-progress/app';
+
+export default function Example() {
+  const router = useRouter();
+
+  return <button onClick={() => router.push('/dashboard')}>Dashboard</button>;
+}
+```
+
+## Pages Router
+
+### Progress
 
 ```tsx
 import type { AppProps } from 'next/app';
+
 import { Progress } from 'nextjs-progress/pages';
 import 'nextjs-progress/css';
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Component {...pageProps} />
-      <Progress options={{ showSpinner: true }} />
+      <Progress />
     </>
   );
 }
 ```
 
----
+### Configuration
 
-#### Custom Progress
+Add `nextjs-progress` to `transpilePackages` in `next.config.js` or `next.config.ts`.
 
-```tsx
-import type { AppProps } from 'next/app';
-import { Progress } from 'nextjs-progress/pages';
+```ts
+const nextConfig = {
+  transpilePackages: ['nextjs-progress'],
+};
 
-export default function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <>
-      <Component {...pageProps} />
-      <Progress className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-        Loading...
-      </Progress>
-    </>
-  );
-}
+export default nextConfig;
 ```
 
-**Note**: When using custom progress, a `data-state` (`"active"` or `"done"`) and `data-progress` attributes will be added to the element. You can use these for CSS transitions and animations.
+## Link
 
-### Additional Utilities (Hooks & Link)
-
-#### `Link`
-
-A drop-in replacement for `next/link` with progress support.
-
-If you want to disable the progress for a specific link, you can pass the `disableProgress` prop.
+Use `nextjs-progress/link` as a progress-aware replacement for `next/link`.
 
 ```tsx
 import Link from 'nextjs-progress/link';
@@ -142,10 +142,8 @@ import Link from 'nextjs-progress/link';
 export default function Navigation() {
   return (
     <nav>
-      // Standard link with progress
       <Link href="/about">About</Link>
-      
-      // Link that disables progress
+
       <Link href="/contact" disableProgress>
         Contact
       </Link>
@@ -154,101 +152,215 @@ export default function Navigation() {
 }
 ```
 
----
+Use `disableProgress` to prevent progress from starting for a specific link.
 
-#### `useRouter` (App Router only)
+## Custom Navigation
 
-Custom hook that wraps Next.js App Router.
+The `nextjs-progress/navigation` entry point provides:
+
+- `createRouter()`
+- `createLink()`
+
+These APIs can be used with custom router and Link implementations.
+
+### `createRouter()`
+
+Wrap a custom router hook:
 
 ```tsx
 'use client';
-import { useRouter } from 'nextjs-progress/app';
 
-export default function Page() {
+import { createRouter } from 'nextjs-progress/navigation';
+import { useMyRouter } from './my-router';
+
+export const useRouter = createRouter(useMyRouter);
+```
+
+The wrapped router provides progress handling for supported navigation methods.
+
+### `createLink()`
+
+Wrap a custom Link component:
+
+```tsx
+'use client';
+
+import { createLink } from 'nextjs-progress/navigation';
+import MyLink from './my-link';
+
+export const Link = createLink(MyLink);
+```
+
+The returned component supports the original Link props and `disableProgress`.
+
+### next-intl
+
+`createRouter()` and `createLink()` can be used with `next-intl`.
+
+```tsx
+'use client';
+
+import { createNavigation } from 'next-intl/navigation';
+import { createLink, createRouter } from 'nextjs-progress/navigation';
+
+import { routing } from './routing';
+
+const {
+  Link: NextIntlLink,
+  redirect,
+  usePathname,
+  useRouter: useNextIntlRouter,
+  getPathname,
+} = createNavigation(routing);
+
+const useRouter = createRouter(useNextIntlRouter);
+const Link = createLink(NextIntlLink);
+
+export { getPathname, Link, redirect, usePathname, useRouter };
+```
+
+> The module that calls `createLink()` must be a Client Component.
+
+You can then use the wrapped APIs normally:
+
+```tsx
+'use client';
+
+import { Link, useRouter } from './navigation';
+
+export default function Example() {
   const router = useRouter();
-  // ...
-  router.push('/dashboard'); // Navigate to /dashboard
+
+  return (
+    <>
+      <Link href="/about">About</Link>
+
+      <button onClick={() => router.push('/dashboard')}>Dashboard</button>
+    </>
+  );
 }
 ```
 
----
+## Routing Options
 
-#### `useProgress`
+### `basePath`
 
-Hook to manually control progress.
+```tsx
+<Progress basePath="/docs" />
+```
+
+### `i18nPath`
+
+```tsx
+<Progress i18nPath />
+```
+
+### Both
+
+```tsx
+<Progress basePath="/docs" i18nPath />
+```
+
+### `disableSameUrl`
+
+Enable progress for same-URL navigation:
+
+```tsx
+<Progress disableSameUrl={false} />
+```
+
+## `useProgress`
+
+Control the progress indicator manually.
 
 ```tsx
 'use client';
+
 import { useProgress } from 'nextjs-progress';
 
-export default function Page() {
+export default function Example() {
   const { start, done } = useProgress();
-  // ...
-  const fetchData = async () => {
-    start(); // Start the progress
-    await fetch('/api/data');
-    done(); // Done the progress
+
+  const loadData = async () => {
+    start();
+
+    try {
+      await fetch('/api/data');
+    } finally {
+      done();
+    }
   };
+
+  return <button onClick={loadData}>Load data</button>;
 }
 ```
 
-## Props
-
-| Prop             | Type              | Default     | Description                                                                              |
-| ---------------- | ----------------- | ----------- | ---------------------------------------------------------------------------------------- |
-| `children`       | `React.ReactNode` | `undefined` | Content to be rendered as custom progress.                                               |
-| `as`             | `ElementType`     | `div`       | The HTML element type to render the progress as.                                         |
-| `asChild`        | `boolean`         | `false`     | If `true`, the custom progress will be rendered as a child of its content.               |
-| `disableSameUrl` | `boolean`         | `true`      | If `false`, progress will be shown when navigating to the same URL.                      |
-| `options`        | `ProgressOptions` | `undefined` | Configuration object for the progress behavior. See `ProgressOptions` below for details. |
-
-### ProgressOptions
-
-| options        | Type      | Default  | Description                                                                                                           |
-| -------------- | --------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
-| `easing`       | `string`  | `linear` | The CSS `transition-timing-function` for progress bar animations.                                                     |
-| `speed`        | `number`  | `200`    | The speed of the progress bar animation (ms).                                                                         |
-| `trickle`      | `number`  | `true`   | Whether to enable the “trickle” effect (gradual progress increase).                                                   |
-| `trickleSpeed` | `number`  | `200`    | The speed of the trickle effect (ms).                                                                                 |
-| `showSpinner`  | `boolean` | `false`  | Whether to show a loading spinner with progress bar.                                                                  |
-| `direction`    | `ltr│rtl` | `ltr`    | Direction of the progress bar. If not provided, it automatically falls back to `document.dir` (if available).         |
-| `exitDuration` | `number`  | `200`    | Time (ms) to keep the custom progress mounted after completion. Should match your exit transition/animation duration. |
-
-## Configuration
-
-If you are using nextjs-progress with the **Pages Router** directory, you need to add nextjs-progress to the transpilePackages array in your next.config(.js/.ts) file. This is necessary for the package to be correctly works in **Pages Router** directory.
+## Progress Options
 
 ```tsx
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  // ... other configurations
-  transpilePackages: ['nextjs-progress', ...otherPackages],
-};
-
-module.exports = nextConfig;
+<Progress
+  options={{
+    easing: 'linear',
+    speed: 200,
+    trickle: true,
+    trickleSpeed: 200,
+    showSpinner: false,
+    direction: 'ltr',
+    exitDuration: 200,
+  }}
+/>
 ```
+
+| Option         | Type             | Default | Description                                                                                                                                                   |
+| -------------- | ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `easing`       | `string`         | —       | The CSS `transition-timing-function` used for progress bar animations.                                                                                        |
+| `speed`        | `number`         | —       | The animation speed of the progress bar, in milliseconds.                                                                                                     |
+| `trickle`      | `boolean`        | —       | Enables or disables the automatic trickle effect that gradually increases progress while navigation is in progress.                                           |
+| `trickleSpeed` | `number`         | —       | The interval, in milliseconds, between automatic trickle updates.                                                                                             |
+| `showSpinner`  | `boolean`        | —       | Determines whether a loading spinner is displayed alongside the progress bar.                                                                                 |
+| `direction`    | `'ltr' \| 'rtl'` | —       | Sets the direction of the progress bar. If not specified, the direction can fall back to the document direction when available.                               |
+| `exitDuration` | `number`         | —       | The time, in milliseconds, that the progress indicator remains mounted after completion. This should match the duration of your exit transition or animation. |
+
+## Progress Props
+
+| Prop             | Type                | Default | Description                                                                                                                  |
+| ---------------- | ------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `disableSameUrl` | `boolean`           | `true`  | If `false`, progress will also be shown when navigating to the current URL.                                                  |
+| `basePath`       | `string`            | `''`    | The base path configured for your Next.js application.                                                                       |
+| `i18nPath`       | `boolean`           | `false` | Enables support for locale-prefixed routes.                                                                                  |
+| `options`        | `ProgressOptions`   | —       | Configuration options for the progress indicator. See `ProgressOptions` below.                                               |
+| `as`             | `React.ElementType` | `'div'` | The element or component used to render the progress indicator.                                                              |
+| `asChild`        | `boolean`           | `false` | If `true`, renders the progress indicator using the provided child element or component instead of creating its own element. |
+| `children`       | `React.ReactNode`   | —       | Custom content rendered inside the progress indicator.                                                                       |
 
 ## Theming
 
-For advanced customization of the progress bar’s appearance (like color, height and etc.), nextjs-progress utilizes CSS variables. This allows for flexible theming without needing to pass props.
+Import the package CSS:
 
-Add these variables to your global CSS file.
+```tsx
+import 'nextjs-progress/css';
+```
 
-Available CSS Variables:
+Customize the progress indicator with CSS variables:
 
-- `--progress-color`: Sets the main color of the progress bar.
-- `--progress-height`: Sets the height of the progress bar.
-- `--progress-z-index`: Controls the stacking order of the progress bar.
-- `--progress-box-shadow`: Sets the shadow for the progress bar.
-- `--progress-spinner-size`: Defines the size of the spinner icon.
-- `--progress-spinner-top`: Adjusts the top position of the spinner.
-- `--progress-spinner-right`: Adjusts the right position of the spinner.
-- `--progress-spinner-bottom`: Adjusts the bottom position of the spinner.
-- `--progress-spinner-left`: Adjusts the left position of the spinner.
-- `--progress-spinner-border-width`: Sets the border width for the spinner.
-- `--progress-spinner-animation`: Sets the animation for the spinner.
-- `--progress-spinner-animation-duration`: Controls the default animation speed of the spinner.
+```css
+:root {
+  --progress-color: #3c6df0;
+  --progress-height: 3px;
+  --progress-z-index: 9999;
+  --progress-box-shadow: 0 0 10px var(--progress-color);
+
+  --progress-spinner-size: 18px;
+  --progress-spinner-top: 15px;
+  --progress-spinner-right: 15px;
+  --progress-spinner-bottom: auto;
+  --progress-spinner-left: auto;
+  --progress-spinner-border-width: 2px;
+  --progress-spinner-animation: spin 0.4s linear infinite;
+  --progress-spinner-animation-duration: 0.4s;
+}
+```
 
 ## License
 
-MIT License
+MIT

@@ -2,22 +2,39 @@ import { clamp } from '../utils/progress.util';
 
 import { PROGRESS_MAX, PROGRESS_MIN, TIMEOUT_DELAY } from '../constants';
 
-import type { ProgressOptions } from '../types/progress.type';
+import type { ProgressOptions, ProgressRoutingOptions } from '../types/progress.type';
 
-const defaultSettings: Required<ProgressOptions> = {
+const defaultSettings: Required<ProgressOptions> & Required<ProgressRoutingOptions> = {
   easing: 'linear',
   speed: 200,
   trickle: true,
   trickleSpeed: 200,
   showSpinner: false,
-  disableSameUrl: true,
   direction: 'ltr',
   exitDuration: 200,
+
+  disableSameUrl: true,
+  basePath: '',
+  i18nPath: false,
 };
 
 export class Progress {
-  static settings: Required<ProgressOptions> = defaultSettings;
+  static settings: Required<ProgressOptions> = {
+    easing: defaultSettings.easing,
+    speed: defaultSettings.speed,
+    trickle: defaultSettings.trickle,
+    trickleSpeed: defaultSettings.trickleSpeed,
+    showSpinner: defaultSettings.showSpinner,
+    direction: defaultSettings.direction,
+    exitDuration: defaultSettings.exitDuration,
+  };
   static status: number | null = null;
+
+  private static routing: Required<ProgressRoutingOptions> = {
+    disableSameUrl: defaultSettings.disableSameUrl,
+    basePath: defaultSettings.basePath,
+    i18nPath: defaultSettings.i18nPath,
+  };
 
   // Timer for the automatic trickle increment effect
   private static trickleTimer: ReturnType<typeof setTimeout> | null = null;
@@ -39,6 +56,20 @@ export class Progress {
 
     this.settings = { ...this.settings, ...options };
     this.notify();
+  }
+
+  static _configureRouting(options: Partial<ProgressRoutingOptions>) {
+    const changed = (Object.keys(options) as (keyof ProgressRoutingOptions)[]).some(
+      (key) => this.routing[key] !== options[key],
+    );
+
+    if (!changed) return;
+
+    this.routing = { ...this.routing, ...options };
+  }
+
+  static getRouting() {
+    return this.routing;
   }
 
   // Set the Progress status

@@ -4,6 +4,8 @@ import { createPortal } from 'react-dom';
 import { useProgress } from '../hooks/use-progress';
 import { toBarPerc } from '../utils/progress.util';
 
+import { Progress as ProgressCore } from '../core/progress';
+
 import { PROGRESS_MAX } from '../constants';
 
 import type { ProgressDirection, ProgressProps } from '../types/progress.type';
@@ -11,9 +13,18 @@ import type { ProgressDirection, ProgressProps } from '../types/progress.type';
 function Progress<T extends React.ElementType = 'div'>(
   props: ProgressProps<T>,
 ): React.ReactElement | null {
-  const { as, asChild, children, disableSameUrl = true, options, ...rest } = props;
+  const {
+    as,
+    asChild,
+    children,
+    disableSameUrl = true,
+    basePath = '',
+    i18nPath = false,
+    options,
+    ...rest
+  } = props;
   const Comp = as || 'div';
-  const isCustomProgress = children || as;
+  const isCustomProgress = !!(children || as);
 
   const [mounted, setMounted] = React.useState(false);
 
@@ -33,8 +44,14 @@ function Progress<T extends React.ElementType = 'div'>(
       ? (options?.exitDuration ?? progress.settings.exitDuration)
       : (options?.speed ?? progress.settings.speed);
 
-    progress.configure({ ...options, disableSameUrl, direction, exitDuration });
-  }, [options, disableSameUrl, isCustomProgress, progress]);
+    progress.configure({ ...options, direction, exitDuration });
+
+    ProgressCore._configureRouting({
+      disableSameUrl,
+      basePath,
+      i18nPath,
+    });
+  }, [options, disableSameUrl, isCustomProgress, progress, basePath, i18nPath]);
 
   React.useEffect(() => {
     if (isActive) {

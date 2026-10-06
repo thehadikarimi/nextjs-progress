@@ -8,9 +8,14 @@ export type ProgressOptions = {
   trickle?: boolean;
   trickleSpeed?: number;
   showSpinner?: boolean;
-  disableSameUrl?: boolean;
   direction?: ProgressDirection;
   exitDuration?: number;
+};
+
+export type ProgressRoutingOptions = {
+  disableSameUrl?: boolean;
+  basePath?: string;
+  i18nPath?: boolean;
 };
 
 export type UseProgressReturn = {
@@ -49,5 +54,7 @@ export type ProgressProps<T extends ElementType = 'div'> = {
   asChild?: boolean;
   children?: React.ReactNode;
   disableSameUrl?: boolean;
-  options?: Omit<ProgressOptions, 'disableSameUrl'>;
+  basePath?: string;
+  i18nPath?: boolean;
+  options?: ProgressOptions;
 } & Omit<ComponentPropsWithoutRef<T>, 'as' | 'children'>;

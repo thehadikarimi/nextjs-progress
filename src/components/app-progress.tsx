@@ -6,6 +6,8 @@ import Progress from './progress';
 import { useProgress } from '../hooks/use-progress';
 import { getCurUrl } from '../utils/router.util';
 
+import { Progress as ProgressCore } from '../core/progress';
+
 import { TIMEOUT_DELAY } from '../constants';
 
 import type { ProgressProps } from '../types/progress.type';
@@ -15,12 +17,14 @@ function AppProgressComponent<T extends React.ElementType = 'div'>(props: Progre
   const searchParams = useSearchParams();
   const progress = useProgress();
   const prevUrlRef = React.useRef<string>('');
+  const { basePath, i18nPath } = ProgressCore.getRouting();
 
   // Delay needed because with React.Suspense, Next.js updates the URL before
   // the transition visibly finishes (esp. on back/forward). Without this delay,
   // prevUrlRef updates too soon and progress won’t start and done.
   React.useEffect(() => {
-    const curUrl = getCurUrl();
+    const routingOptions = { basePath, i18nPath };
+    const curUrl = getCurUrl(routingOptions);
 
     if (prevUrlRef.current && prevUrlRef.current !== curUrl) {
       setTimeout(() => {
@@ -31,11 +35,12 @@ function AppProgressComponent<T extends React.ElementType = 'div'>(props: Progre
     setTimeout(() => {
       prevUrlRef.current = curUrl;
     }, TIMEOUT_DELAY);
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, basePath, i18nPath]);
 
   React.useEffect(() => {
     const handlePopState = () => {
-      const curUrl = getCurUrl();
+      const routingOptions = { basePath, i18nPath };
+      const curUrl = getCurUrl(routingOptions);
 
       if (prevUrlRef.current === curUrl) return;
 
@@ -44,7 +49,7 @@ function AppProgressComponent<T extends React.ElementType = 'div'>(props: Progre
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
+  }, [basePath, i18nPath]);
 
   return <Progress {...props} />;
 }
